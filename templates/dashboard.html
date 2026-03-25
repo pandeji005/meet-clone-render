@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Meet Clone</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+    <div class="dashboard-screen">
+        <div class="glass-panel dashboard-panel">
+            <h1 style="background: linear-gradient(135deg, #fff, #aeb5ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Meet Clone</h1>
+            <p>Connect instantly with premium video calling</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <div class="flashes">
+                {% for category, message in messages %}
+                  <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            <div class="dashboard-actions">
+                <!-- Create Meeting -->
+                <div class="action-card">
+                    <span class="material-symbols-outlined action-icon">video_call</span>
+                    <h3>New Meeting</h3>
+                    <p>Start an instant meeting</p>
+                    <form action="{{ url_for('create_meeting') }}" method="POST" style="width: 100%;">
+                        <button type="submit" class="primary-btn">Create Meeting</button>
+                    </form>
+                </div>
+
+                <div class="action-divider"><span>OR</span></div>
+
+                <!-- Join Meeting -->
+                <div class="action-card">
+                    <span class="material-symbols-outlined action-icon">keyboard</span>
+                    <h3>Join Meeting</h3>
+                    <p>Enter a code to join</p>
+                    <form action="{{ url_for('join_meeting') }}" method="POST" style="width: 100%;">
+                        <div class="input-group" style="margin-bottom: 0;">
+                            <input type="text" name="room_id" placeholder="Enter Room ID" autocomplete="off" required>
+                            <button type="submit" class="secondary-btn" style="width: auto;">Join</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
