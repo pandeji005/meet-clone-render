@@ -1,6 +1,8 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_socketio import SocketIO, join_room, emit
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.pool import NullPool
+
 import uuid
 import datetime
 import os
@@ -12,6 +14,9 @@ app.config['SECRET_KEY'] = 'super-secret-key-12345'
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'meeting_db.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'poolclass': NullPool
+}
 
 db = SQLAlchemy(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
