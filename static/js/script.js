@@ -34,15 +34,39 @@ const ICE_SERVERS = {
 
 async function initPreview() {
     try {
+        // Attempt #1: Both Video and Audio
         localStream = await navigator.mediaDevices.getUserMedia({
             video: true,
             audio: true
         });
+    } catch (error) {
+        console.warn('Could not access both video and audio. Trying audio-only...', error);
+        
+        try {
+            // Attempt #2: Audio Only (common if desktop has no webcam)
+            localStream = await navigator.mediaDevices.getUserMedia({
+                video: false,
+                audio: true
+            });
+            // Update UI to show Video is naturally muted
+            isVideoMuted = true;
+            camBtn.classList.remove('active');
+            camBtn.querySelector('span').innerText = 'videocam_off';
+            previewCamBtn.classList.remove('active');
+            previewCamBtn.querySelector('span').innerText = 'videocam_off';
+
+        } catch (e2) {
+            console.error('Error accessing all media devices.', e2);
+            // Alert user but DO NOT CRASH. Let them join in "View-Only" mode.
+            alert('No microphone or camera found (or permissions were blocked). You will join the room in View-Only mode!');
+            localStream = null;
+            return;
+        }
+    }
+
+    if (localStream) {
         previewVideo.srcObject = localStream;
         localVideo.srcObject = localStream;
-    } catch (error) {
-        console.error('Error accessing media devices.', error);
-        alert('Could not access camera and microphone. Please allow permissions.');
     }
 }
 
